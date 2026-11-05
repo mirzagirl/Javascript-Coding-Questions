@@ -48,3 +48,75 @@ console.log(delete Rectangle.prototype.constructor); // true
 ```
 
 When using property descriptors with `Object.create()` or `Object.defineProperty()`, omitted `writable`, `enumerable`, and `configurable` settings default to `false`. Ordinary properties written directly in an object literal have these settings set to `true`.
+
+## Does Object.create() restrict every property?
+
+No. Creating an object with `Object.create()` does not automatically restrict all its properties. The defaults depend on how you add each property.
+
+### Only passing a prototype
+
+```js
+const parent = { country: "India" };
+const child = Object.create(parent);
+
+child.name = "Sara";
+```
+
+Because `name` is a new own property added through ordinary assignment, its settings are:
+
+```js
+// value: "Sara"
+// writable: true
+// enumerable: true
+// configurable: true
+```
+
+You can change it, list it with `Object.keys(child)`, or delete it.
+
+### Passing a property descriptor as the second argument
+
+```js
+const child = Object.create(parent, {
+  name: {
+    value: "Sara",
+  },
+});
+```
+
+For this newly defined property, the omitted flags default to `false`:
+
+```js
+// value: "Sara"
+// writable: false
+// enumerable: false
+// configurable: false
+```
+
+`name` cannot be reassigned or deleted, and it does not appear in `Object.keys(child)`. Attempts to change or delete it fail silently in non-strict code and throw a `TypeError` in strict mode.
+
+### Explicitly allowing normal behavior
+
+```js
+const child = Object.create(parent, {
+  name: {
+    value: "Sara",
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  },
+});
+
+child.name = "Ali";              // Allowed
+console.log(Object.keys(child)); // ["name"]
+delete child.name;               // Allowed
+```
+
+These settings apply to the individual property, not the entire object. Even if `name` is restricted, you can still add another property:
+
+```js
+const child = Object.create(parent, {
+  name: { value: "Sara" },
+});
+
+child.age = 25; // Allowed; name's restrictions do not apply to age.
+```
