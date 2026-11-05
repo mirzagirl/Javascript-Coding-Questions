@@ -120,3 +120,43 @@ const child = Object.create(parent, {
 
 child.age = 25; // Allowed; name's restrictions do not apply to age.
 ```
+
+## Writable but non-enumerable property
+
+```js
+const o2 = Object.create(
+  {},
+  {
+    p: {
+      value: 42,
+      writable: true,
+      enumerable: false,
+      configurable: true,
+    },
+  },
+);
+
+o2.p = 10; // Allowed because writable is true.
+
+console.log(o2.p);           // 10
+console.log(Object.keys(o2)); // [] — p is non-enumerable.
+```
+
+`p` belongs directly to `o2`. It can be read and changed, but `enumerable: false` excludes it from `Object.keys(o2)`.
+
+This is different from putting `p` on the prototype:
+
+```js
+const another = Object.create({ p: 42 });
+
+console.log(another.p);            // 42 — inherited from the prototype.
+console.log(Object.keys(another)); // [] — no own enumerable properties.
+
+another.p = 10; // Creates a new own property; the inherited p is writable.
+
+console.log(another.p);            // 10
+console.log(Object.keys(another)); // ["p"] — the new own property is enumerable.
+console.log(Object.getPrototypeOf(another).p); // 42 — prototype unchanged.
+```
+
+Both objects initially return `[]` from `Object.keys()`, but for different reasons: `o2` has a non-enumerable own property; `another` initially inherits its property.
