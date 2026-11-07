@@ -140,7 +140,31 @@ Promise.all([
 
 Your code and definition were correct. The values keep their input order even if completion order differs. If Promise 2's flag were `false`, the combined promise would reject with `Promise 2` without waiting for the later timers.
 
-## Promise.all learning polyfill
+## Promise learning polyfills
+
+Each file is standalone, attaches its implementation as a static method on `Promise`, and includes runnable examples.
+
+| Method | File | Rule |
+| --- | --- | --- |
+| `Promise.myPromiseAll(inputs)` | [all](promise-all-polyfill.js) | Every input must succeed; first failure rejects. |
+| `Promise.myPromiseAny(inputs)` | [any](promise-any-polyfill.js) | First success wins; all failures reject with an `AggregateError`. |
+| `Promise.myPromiseRace(inputs)` | [race](promise-race-polyfill.js) | First success or failure wins. |
+| `Promise.myPromiseAllSettled(inputs)` | [allSettled](promise-all-settled-polyfill.js) | Wait for every outcome and return status objects. |
+
+Run a file from the repository root:
+
+```sh
+node Promise/promise-all-polyfill.js
+node Promise/promise-any-polyfill.js
+node Promise/promise-race-polyfill.js
+node Promise/promise-all-settled-polyfill.js
+```
+
+These are learning implementations of the four combinators using native `Promise`, `Promise.resolve()`, and (for `any`) `AggregateError`. They do not replace the Promise constructor or implement all native subclassing and iterator semantics.
+
+Empty input: `all` and `allSettled` fulfill with `[]`; `any` rejects with an `AggregateError`; `race` stays pending.
+
+### Understanding the all implementation
 
 [Runnable implementation and examples](promise-all-polyfill.js).
 
