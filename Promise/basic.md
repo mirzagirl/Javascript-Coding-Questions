@@ -152,6 +152,8 @@ node Promise/promise-all-polyfill.js
 
 This implements the combining logic using native promises. It covers input order, plain values, rejection, and empty input.
 
+The implementation is attached to `Promise` as a static method. Call it with `Promise.myPromiseAll(inputs)`.
+
 `promiseFunc()` already returns a promise, so calling `.then()` on its result works directly. `Promise.resolve(item)` also lets the implementation accept plain values such as `42`. For a native Promise, it returns the same promise without restarting the operation.
 
 `resolve(message)` inside the executor settles the promise being created with that message; `Promise.resolve(item)` returns a promise representing an existing item.

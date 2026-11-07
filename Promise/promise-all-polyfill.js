@@ -1,7 +1,7 @@
 // From the repository root, run: node Promise/promise-all-polyfill.js
 // Learning implementation using native promises, without calling Promise.all().
 
-function myPromiseAll(inputs) {
+Promise.myPromiseAll = function (inputs) {
     return new Promise((resolve, reject) => {
         // Accept an iterable, such as an array or Set.
         // If spreading throws, the returned promise rejects automatically.
@@ -39,7 +39,7 @@ function myPromiseAll(inputs) {
             );
         });
     });
-}
+};
 
 function promiseFunc(message, wait, isResolved) {
     return new Promise((resolve, reject) => {
@@ -55,7 +55,7 @@ function promiseFunc(message, wait, isResolved) {
 
 async function runExamples() {
     console.log("1. All succeed; output keeps input order:");
-    const values = await myPromiseAll([
+    const values = await Promise.myPromiseAll([
         promiseFunc("Promise 1", 300, true),
         promiseFunc("Promise 2", 100, true),
         promiseFunc("Promise 3", 200, true),
@@ -66,7 +66,7 @@ async function runExamples() {
 
     console.log("\n2. One fails; combined promise rejects:");
     try {
-        await myPromiseAll([
+        await Promise.myPromiseAll([
             promiseFunc("Promise 1", 300, true),
             promiseFunc("Promise 2 failed", 100, false),
             promiseFunc("Promise 3", 200, true)
@@ -77,7 +77,7 @@ async function runExamples() {
     }
 
     console.log("\n3. Empty input:");
-    console.log(await myPromiseAll([]));
+    console.log(await Promise.myPromiseAll([]));
     // []
 }
 
