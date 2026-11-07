@@ -140,6 +140,22 @@ Promise.all([
 
 Your code and definition were correct. The values keep their input order even if completion order differs. If Promise 2's flag were `false`, the combined promise would reject with `Promise 2` without waiting for the later timers.
 
+## Promise.all learning polyfill
+
+[Runnable implementation and examples](promise-all-polyfill.js).
+
+From the repository root, run:
+
+```sh
+node Promise/promise-all-polyfill.js
+```
+
+This implements the combining logic using native promises. It covers input order, plain values, rejection, and empty input.
+
+`promiseFunc()` already returns a promise, so calling `.then()` on its result works directly. `Promise.resolve(item)` also lets the implementation accept plain values such as `42`. For a native Promise, it returns the same promise without restarting the operation.
+
+`resolve(message)` inside the executor settles the promise being created with that message; `Promise.resolve(item)` returns a promise representing an existing item.
+
 ## Important points
 
 - These methods do not cancel the remaining operations when they finish early.
